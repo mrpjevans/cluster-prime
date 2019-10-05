@@ -1,6 +1,36 @@
 from mpi4py import MPI
 import time
 import sys
+from blinkt import set_pixel, set_brightness, show, clear
+
+# Define colours
+colours = [
+    [128, 128, 128],
+    [0, 0, 128],
+    [0, 0, 255],
+    [0, 128, 0],
+    [0, 255, 0],
+    [128, 0, 0],
+    [255, 0, 0],
+    [128, 128, 0],
+    [255, 255, 0],
+    [255, 255, 255]
+]
+
+# Set Blinkt! brightness
+set_brightness(0.1)
+
+# Light the blinkt up based on the current value
+def set_blinkt(val):
+    clear()
+    s_val = str(val)[::-1]
+    i = 0
+    while i < len(s_val):
+        num = int(s_val[i])
+        col = colours[num]
+        set_pixel(i, col[0], col[1], col[2])
+        i += 1
+    show()
 
 # Attach to the cluster and find out who I am and how big it is
 comm = MPI.COMM_WORLD
@@ -23,8 +53,8 @@ primes = []
 for candidate_number in range(start_number,
                               end_number, cluster_size * 2):
 
-    # Log progress in steps
-    # print(candidate_number)
+    # Display the number on Blinkt!
+    set_blinkt(candidate_number)
 
     # Assume this number is prime
     found_prime = True
